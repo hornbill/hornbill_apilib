@@ -3,6 +3,12 @@ name = "hornbill_apilib"
 version = "0.1.0"
 authors = ["jeffreys <jeffrey_smith@hotmail.co.uk>"]
 edition = "2018"
+description = "rust api library for connecting to a hornbill instance"
+readme = "README.md"
+homepage = "https://www.hornbill.com/"
+documentation = "https://docs.rs/hornbill_apilib"
+repository = "https://github.com/hornbill/hornbill_apilib"
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
