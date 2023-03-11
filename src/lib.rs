@@ -4,7 +4,7 @@ use regex::Regex;
 use serde::Deserialize;
 use std::time::Duration;
 
-/// The xmlmc struct
+/// The xmlmc struct which contains all the methods required to interact with the hornbill api.
 pub struct Xmlmc {
     server: String,
     paramsxml: String,
@@ -29,9 +29,9 @@ struct Root {
 #[derive(Debug, Deserialize)]
 struct Zoneinfo {
     #[serde(rename(deserialize = "clusterFqn"))]
-    pub cluster_fqn: String,
+    pub _cluster_fqn: String,
     #[serde(rename(deserialize = "releaseStream"))]
-    pub release_stream: String,
+    pub _release_stream: String,
     pub endpoint: String,
     pub message: String,
 }
@@ -45,7 +45,7 @@ pub struct Attributes {
 impl Xmlmc {
     /// You can can create a xmlmc object that can be used to send data to your hornbill instance
     /// This will be created with a default timeout of 30 seconds and user_agent of "rust_apilib/1.1"
-    /// ```
+    /// ```ignore
     /// let mut c = Xmlmc::new(&url).expect("Could not create client");
     /// ```
     pub fn new(s: &str) -> Result<Xmlmc, Box<dyn std::error::Error>> {
@@ -73,7 +73,7 @@ impl Xmlmc {
 
     /// You can add parameters to the xml you will be sending to the server.
     /// Any not utf8 text in value will be replace with the utf8 replacement character.
-    /// ```
+    /// ```ignore
     /// c.set_param("username","admin");
     /// ```
     pub fn set_param(&mut self, key: &str, value: &str) -> Result<(), &str> {
@@ -135,11 +135,11 @@ impl Xmlmc {
     }
 
     /// You can use this to open an xml element in your xml output to the server
-    /// ```
+    /// ```ignore
     /// c.open_element("userObject");
     /// ```
     /// This will append
-    /// ```
+    /// ```ignore
     /// <userObject>
     /// ```
 
@@ -155,11 +155,11 @@ impl Xmlmc {
     }
 
     /// You can use this to close an xml element in your xml output to the server
-    /// ```
+    /// ```ignore
     /// c.close_element("userObject");
     /// ```
     /// This will append
-    /// ```
+    /// ```ignore
     /// </userObject>
     /// ```
 
@@ -175,7 +175,7 @@ impl Xmlmc {
     }
 
     /// You can use this to return the full xml we would be sending to the server
-    /// ```
+    /// ```ignore
     /// let xml_output = c.get_params();
     /// ```
     pub fn get_params(&self) -> String {
@@ -188,7 +188,7 @@ impl Xmlmc {
 
     /// You can use this to clear the contents of the xml you would send to the server.
     /// This is automtically called at the end of invoke so you can reuse the connection and send more requests.
-    /// ```
+    /// ```ignore
     /// c.clear_params()
     /// ```
     pub fn clear_params(&mut self) {
@@ -197,7 +197,7 @@ impl Xmlmc {
 
     /// You can use this to set the useragent string that is sent to the hornbill server. This defaults to "rust_apilib/1.1"
     /// You should set this to something unique for you so we can see who is calling our api endpoints.
-    /// ```
+    /// ```ignore
     /// c.set_user_agent("demo_ldapimport/1.1");
     /// ```
     pub fn set_user_agent(&mut self, user: &str) {
@@ -216,7 +216,7 @@ impl Xmlmc {
 
     /// You can use this is ask for a json response from the server.
     /// It sets the Accept header to "text/json" so it knows to response with json otherwise it uses xml.
-    /// ```
+    /// ```ignore
     /// c.set_json_response(true);
     /// ```
     pub fn set_json_response(&mut self, b: bool) {
@@ -225,22 +225,22 @@ impl Xmlmc {
 
     /// You can use this to get the currently set sessionId. This sessionId will be generated when you call userLogon or guestLogon and stored in the Xmlmc object
     /// for all other calls after this.
-    /// ```
+    /// ```ignore
     /// let session_id = c.get_session_id();
     /// ```
     pub fn get_session_id(&self) -> String {
         self.session_id.to_owned()
     }
 
-    /// You can use this to set an APIkey https://wiki.hornbill.com/index.php/API_keys that can be used to identify youeself rather than the logon APIS.
-    /// ```
+    /// You can use this to set an APIkey <https://wiki.hornbill.com/index.php/API_keys> that can be used to identify youeself rather than the logon APIS.
+    /// ```ignore
     /// c.set_apikey("1234567890");
     /// ```
     pub fn set_apikey(&mut self, s: &str) {
         self.api_key = s.to_owned();
     }
     /// You can use this to set a session_id that you have retrieved after calling userLogon or guestLogon
-    /// ```
+    /// ```ignore
     /// c.set_sessionid("1234567890");
     /// ```
     pub fn set_sessionid(&mut self, s: &str) {
@@ -248,7 +248,7 @@ impl Xmlmc {
     }
 
     /// You can use this to set a a trace identifier. This can then be used to identify in logging this exact api call.
-    /// ```
+    /// ```ignore
     /// c.set_trace("0987654321zxc");
     /// ```
     pub fn set_trace(&mut self, s: &str) {
@@ -256,7 +256,7 @@ impl Xmlmc {
     }
     /// You can use this to tell the library to copy out all headers recieved back from the server for later use.
     /// You can then use the get_headers() method to view the headers after the invoke call.
-    /// ```
+    /// ```ignore
     /// c.set_copy_headers(true);
     /// ```
     pub fn set_copy_headers(&mut self, s: bool) {
@@ -265,30 +265,30 @@ impl Xmlmc {
         self.headers = http::header::HeaderMap::new();
     }
     /// You can use this to check the last http status number the server returned from an invoke call.
-    /// ```
+    /// ```ignore
     /// let status = c.get_status_code();
     /// ```
     pub fn get_status_code(&self) -> u16 {
         self.statuscode
     }
     /// You can use this to get the currently set url for the server you will be connecting to.
-    /// ```
+    /// ```ignore
     /// let server_url = c.get_server_url();
     /// ```
     pub fn get_server_url(&self) -> String {
         self.server.clone()
     }
     /// You can use this to get the number of http requests that have been made by this xmlmc object.
-    /// ```
+    /// ```ignore
     /// let counter = c.get_count();
     /// ```
     pub fn get_count(&self) -> u64 {
         self.count
     }
-    /// You can use this to get the headers that were sent by the server for the last http call. YOu will need to call set_copy_headers(true) before any invoke
+    /// You can use this to get the headers that were sent by the server for the last http call. You will need to call set_copy_headers(true) before any invoke
     /// call so that we save the headers.
     /// check out the responseheaders example to see how to query the headers.
-    /// ```
+    /// ```ignore
     /// let headers = c.get_headers();
     /// ```
     pub fn get_headers(&self) -> http::header::HeaderMap {
@@ -297,7 +297,7 @@ impl Xmlmc {
 
     /// You can use this to make the http call to the server with the xml you have built. The result will either contain a Ok(string) with the response body in
     /// or an Err(String) with the error message of what failed.
-    /// ```
+    /// ```ignore
     /// let headers = c.invoke();
     /// ```
     pub fn invoke(&mut self, service: &str, method: &str) -> Result<String, String> {
@@ -355,7 +355,7 @@ impl Xmlmc {
         self.clear_params();
 
         if result.status() != http::StatusCode::OK {
-            //we return none for now but should probably set errors and satus code.
+            //we return none for now but should probably set errors and status code.
             return Err("Non 200 Status code".to_string());
         }
 
@@ -401,7 +401,7 @@ fn xmlencode(my_str: &str) -> String {
 
 /// You can use this to get the https endpoint for your instance. You should only ever have to call this once per program and
 /// then can reuse the url for any Xmlmc objects you create.
-/// ```
+/// ```ignore
 /// let url = get_url_from_name("demo");
 /// ```
 pub fn get_url_from_name(key: &str) -> Option<String> {

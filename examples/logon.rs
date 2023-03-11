@@ -1,3 +1,4 @@
+use base64::{engine::general_purpose, Engine as _};
 use hornbill_apilib::*;
 
 fn main() {
@@ -20,8 +21,11 @@ fn main() {
 
     //We need to send both userId and our password base64 encoded.
     c.set_param("UserId", "administrator").expect("ERROR");
-    c.set_param("password", &base64::encode("password"))
-        .expect("ERROR");
+    c.set_param(
+        "password",
+        &general_purpose::STANDARD_NO_PAD.encode("password"),
+    )
+    .expect("ERROR");
 
     //We Can print what we are going to send to the server before sending using get_params()
     println!("{}", c.get_params());
