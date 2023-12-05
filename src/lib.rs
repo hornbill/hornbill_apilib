@@ -33,6 +33,8 @@ struct Zoneinfo {
     #[serde(rename(deserialize = "releaseStream"))]
     pub _release_stream: String,
     pub endpoint: String,
+    #[serde(rename(deserialize = "apiEndpoint"))]
+    pub api_endpoint: Option<String>,
     pub message: String,
 }
 
@@ -55,7 +57,7 @@ impl Xmlmc {
             .build()?;
 
         Ok(Xmlmc {
-            server: format!("{}/xmlmc/", s),
+            server: format!("{}/", s),
             paramsxml: "".to_owned(),
             statuscode: 0,
             timeout: 30,
@@ -442,7 +444,10 @@ pub fn get_url_from_name(key: &str) -> Option<String> {
 
     //Check we got a successful repsonse from server.
     if deserialized.zoneinfo.message == "Success" {
-        return Some(deserialized.zoneinfo.endpoint);
+        if deserialized.zoneinfo.api_endpoint.is_some(){
+            return Some(deserialized.zoneinfo.api_endpoint.unwrap());
+        } 
+        return Some(deserialized.zoneinfo.endpoint + "xmlmc/"); //manually adding xmlmc/ in case zoneInfo is on the old version
     }
     None
 }
