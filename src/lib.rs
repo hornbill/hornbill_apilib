@@ -407,7 +407,24 @@ fn xmlencode(my_str: &str) -> String {
 /// let url = get_url_from_name("demo");
 /// ```
 pub fn get_url_from_name(key: &str) -> Option<String> {
-    let url = format!("https://files.hornbill.com/instances/{}/zoneinfo", key);
+    let mut url = format!("https://files.hornbill.com/instances/{}/zoneinfo", key);
+    let _backup_url = format!("https://files.hornbill.co/instances/{}/zoneinfo", key);
+
+    // Check fileserver hosting zoneinfo and switch to backup if anything goes wrong
+    fn zoneinfo_status_check(url: &mut String, backup_url: String) {
+        let client = reqwest::blocking::Client::new();
+        match client.get(&*url).send() {
+            Ok(response) => {
+                if response.status() != reqwest::StatusCode::OK {
+                    *url = backup_url;
+                }
+            },
+            Err(e) => {
+                println!("{}", e);
+            }
+        };
+    }
+    zoneinfo_status_check(&mut url, _backup_url);
 
     let xmlmcclient = match reqwest::blocking::Client::builder()
         .timeout(Duration::from_secs(10))
@@ -445,7 +462,7 @@ pub fn get_url_from_name(key: &str) -> Option<String> {
     //Check we got a successful repsonse from server.
     if deserialized.zoneinfo.message == "Success" {
         if deserialized.zoneinfo.api_endpoint.is_some(){
-            return Some(deserialized.zoneinfo.api_endpoint.unwrap());
+            return deserialized.zoneinfo.api_endpoint;
         } 
         return Some(deserialized.zoneinfo.endpoint + "xmlmc/"); //manually adding xmlmc/ in case zoneInfo is on the old version
     }
@@ -458,7 +475,7 @@ mod tests {
     use super::*;
     #[test]
     fn test_client() {
-        let mut x = super::Xmlmc::new("http://hhq-p02-api.hornbill.com/demo").unwrap();
+        let mut x = super::Xmlmc::new("http://hhq-p02-api.hornbill.com/demo/xmlmc").unwrap();
 
         assert_eq!(
             x.get_server_url(),

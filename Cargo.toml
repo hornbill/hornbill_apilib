@@ -1,6 +1,6 @@
 [package]
 name = "hornbill_apilib"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["jeffreys <jeffrey_smith@hotmail.co.uk>"]
 edition = "2018"
 description = "rust api library for connecting to a hornbill instance"
