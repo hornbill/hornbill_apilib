@@ -16,7 +16,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-hornbill_apilib = "0.2"
+hornbill_apilib = "0.2.1"
 ```
 
 ## Examples
