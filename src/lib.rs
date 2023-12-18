@@ -410,7 +410,10 @@ pub fn get_url_from_name(key: &str) -> Option<String> {
     let mut url = format!("https://files.hornbill.com/instances/{}/zoneinfo", key);
     let _backup_url = format!("https://files.hornbill.co/instances/{}/zoneinfo", key);
 
-    // Check fileserver hosting zoneinfo and switch to backup if anything goes wrong
+    /// Checks fileserver hosting zoneinfo config file and switches to backup if anything goes wrong
+    /// ```ignore
+    /// zoneinfo_status_check("https://files.hornbill.com/instances/demo/zoneinfo", "https://files.hornbill.co/instances/demo/zoneinfo")
+    /// ```
     fn zoneinfo_status_check(url: &mut String, backup_url: String) {
         let client = reqwest::blocking::Client::new();
         match client.get(&*url).send() {
