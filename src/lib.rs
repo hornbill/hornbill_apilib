@@ -360,14 +360,19 @@ impl Xmlmc {
             //we return none for now but should probably set errors and status code.
             return Err("Non 200 Status code".to_string());
         }
-
-        if let Some(cookie) = result.headers().get("Set-Cookie") {
-            //split on ";" then pick the first element and set as sessionId, requires utf8 otherwise will not set value.
-            if let Ok(c_string) = cookie.to_str() {
-                for token in c_string.split(";") {
-                    self.session_id = token.to_owned();
-                    break;
+        //We now get 2 header with Set-Cookie so have to find the right one.
+        let cook = result.headers().get_all("Set-Cookie");
+        for i in cook.iter() {
+            match i.to_str() {
+                Ok(s) => {
+                    if s.contains("ESPSessionState=") {
+                        for token in s.split(";") {
+                            self.session_id = token.to_owned();
+                            break;
+                        }
+                    }
                 }
+                Err(_e) => {}
             }
         }
 
@@ -418,7 +423,7 @@ pub fn get_url_from_name(key: &str) -> Option<String> {
                 if response.status() != reqwest::StatusCode::OK {
                     *url = backup_url;
                 }
-            },
+            }
             Err(e) => {
                 println!("{}", e);
             }
@@ -461,9 +466,9 @@ pub fn get_url_from_name(key: &str) -> Option<String> {
 
     //Check we got a successful repsonse from server.
     if deserialized.zoneinfo.message == "Success" {
-        if deserialized.zoneinfo.api_endpoint.is_some(){
+        if deserialized.zoneinfo.api_endpoint.is_some() {
             return deserialized.zoneinfo.api_endpoint;
-        } 
+        }
         return Some(deserialized.zoneinfo.endpoint + "xmlmc/"); //manually adding xmlmc/ in case zoneInfo is on the old version
     }
     None

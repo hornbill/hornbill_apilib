@@ -22,11 +22,8 @@ fn main() {
     //We need to send both userId and our password base64 encoded.
     //STANDARD is used as no padding results in an error
     c.set_param("UserId", "administrator").expect("ERROR");
-    c.set_param(
-        "password",
-        &general_purpose::STANDARD.encode("password"),
-    )
-    .expect("ERROR");
+    c.set_param("password", &general_purpose::STANDARD.encode("password"))
+        .expect("ERROR");
 
     //We Can print what we are going to send to the server before sending using get_params()
     println!("{}", c.get_params());

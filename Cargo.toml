@@ -1,6 +1,6 @@
 [package]
 name = "hornbill_apilib"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["jeffreys <jeffrey_smith@hotmail.co.uk>"]
 edition = "2018"
 description = "rust api library for connecting to a hornbill instance"
@@ -13,13 +13,13 @@ license-file = "LICENSE"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0.21.0"
-reqwest = { version = "0.11", features = ["blocking","rustls-tls"] }
+base64 = "0.22.0"
+reqwest = { version = "0.12", features = ["blocking", "rustls-tls"] }
 regex = "1"
 lazy_static = "1.4.0"
-serde = { version = "1.0", features=["derive"]}
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-http = "0.2"
+http = "1.1"
 
 [[example]]
 name = "logon"
