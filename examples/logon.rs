@@ -1,15 +1,16 @@
 use base64::{engine::general_purpose, Engine as _};
 use hornbill_apilib::*;
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //We get the url of our instance. We should only ever do this once.
-    let url = get_url_from_name("demo").expect("We did not get a url for our instance");
+    let url = get_url_from_name("demo").await?;
 
     //We then create our xmlmc object that we can use to query our instance.
-    let mut c = Xmlmc::new(&url).expect("Could not create client");
+    let mut c = Xmlmc::new(&url)?;
 
     //You could also hardcode the url of your instance rather than using get_url_from_name
-    //let mut c = Xmlmc::new("http://hhq-p02-api.hornbill.com/hornbill/").expect("Could not create client");
+    //let mut c = Xmlmc::new("http://hhq-p02-api.hornbill.com/hornbill/")?;
 
     //We Need to login to the instance There are two ways of doing this
 
@@ -21,21 +22,14 @@ fn main() {
 
     //We need to send both userId and our password base64 encoded.
     //STANDARD is used as no padding results in an error
-    c.set_param("UserId", "administrator").expect("ERROR");
-    c.set_param("password", &general_purpose::STANDARD.encode("password"))
-        .expect("ERROR");
+    c.set_param("UserId", "administrator")?;
+    c.set_param("password", &general_purpose::STANDARD.encode("password"))?;
 
     //We Can print what we are going to send to the server before sending using get_params()
     println!("{}", c.get_params());
 
-    //This invokes a http request using our parameters to session::logon and if we get a valid response stores it in the res string otherwise it returns.
-    let res = match c.invoke("session", "userLogon") {
-        Ok(s) => s,
-        Err(e) => {
-            println!("{}", e);
-            return;
-        }
-    };
+    //This invokes a http request using our parameters to session::logon and if we get a valid response stores it in the res string, otherwise the error propagates out of main.
+    let res = c.invoke("session", "userLogon").await?;
 
     //You can check what http status code
     println!("http status code: {}", c.get_status_code());
@@ -43,4 +37,6 @@ fn main() {
     //When you logon to your instance
     println!("SessionId: {}", c.get_session_id());
     println!("{}", res);
+
+    Ok(())
 }

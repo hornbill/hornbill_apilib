@@ -3,7 +3,9 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct PingCheck {
-    #[serde(rename = "status")]
+    // serde-xml-rs 0.8+ requires attribute fields to be prefixed with `@`; `status` is an XML
+    // attribute here (`<methodCallResult status="ok">`), not a child element.
+    #[serde(rename = "@status")]
     pub status: String,
     pub params: Params,
 }
@@ -18,42 +20,33 @@ pub struct Params {
     pub service_params_checksum: Option<String>,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //We get the url of our instance. We should only ever do this once.
-    let url = get_url_from_name("demo").expect("We did not get a url for our instance");
+    let url = get_url_from_name("demo").await?;
 
     //We then create our xmlmc object that we can use to query our instance.
-    let mut c = Xmlmc::new(&url).expect("Could not create client");
+    let mut c = Xmlmc::new(&url)?;
 
     //We are going to pick a simple API that does not actully require a login https://api.hornbill.com/system/?op=pingCheck
 
     // This requires one input paramets of stage which is an unsignedint
-    c.set_param("stage", "1").expect("Could not set stage");
+    c.set_param("stage", "1")?;
 
-    //We now invoke the call and check the response if its Ok() we save the string result to res. If it was an Err() we print the error and return.
-    let res = match c.invoke("system", "pingCheck") {
-        Ok(s) => s,
-        Err(e) => {
-            println!("{}", e);
-            return;
-        }
-    };
+    //We now invoke the call and save the string result to res, otherwise the error propagates out of main.
+    let res = c.invoke("system", "pingCheck").await?;
 
     //We now have a valid xml string response in res which we can print
-    println!("{}", &res);
+    println!("{}", res);
 
     //We now need to Deserialize it into something we can use. We will use serde-xml-rs for this https://github.com/RReverser/serde-xml-rs
 
-    let v: PingCheck = match serde_xml_rs::from_reader(res.as_bytes()) {
-        Ok(s) => s,
-        Err(e) => {
-            println!("{}", e);
-            return;
-        }
-    };
+    let v: PingCheck = serde_xml_rs::from_reader(res.as_bytes())?;
 
     //YOu can now print some of the values inside or PingCheck struct.
     println!("{}", v.status);
     println!("{}", v.params.stage_name);
     println!("{}", v.params.next_stage);
+
+    Ok(())
 }
