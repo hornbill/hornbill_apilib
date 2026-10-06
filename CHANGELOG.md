@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.0 (unreleased)
+## 0.5.0 (2026-10-06)
 
 This release contains breaking changes. See **Upgrading from 0.4** below.
 
