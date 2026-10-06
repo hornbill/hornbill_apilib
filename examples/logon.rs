@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //We need to send both userId and our password base64 encoded.
     //STANDARD is used as no padding results in an error
-    c.set_param("UserId", "administrator")?;
+    c.set_param("userId", "administrator")?;
     c.set_param("password", &general_purpose::STANDARD.encode("password"))?;
 
     //We Can print what we are going to send to the server before sending using get_params()

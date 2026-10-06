@@ -22,7 +22,7 @@ pub struct Params {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //Get the url we will be connecting to for our instance. We should only ever need to call this once.
     let url = get_url_from_name("demo").await?;
-    //Create a xmlmc object we will use to send data to our instance. It requires the url we feteched earlier.
+    //Create a xmlmc object we will use to send data to our instance. It requires the url we fetched earlier.
     let mut c = Xmlmc::new(&url)?;
 
     //We tell the xmlmc object that we want to get a json response rather than the usual xml.
@@ -30,7 +30,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     //We will call the system::pingCheck API https://mdh-p01-api.hornbill.com/demo/xmlmc/system/?op=pingCheck
 
-    // This requires one input paramets of stage which is an unsignedint
+    // This requires one input parameter of stage which is an unsigned int
     c.set_param("stage", "1")?;
 
     //We now invoke the call and save the string result to res, otherwise the error propagates out of main.
@@ -49,7 +49,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //We can also access individual elements inside the struct
     println!("{}", v.params.next_stage);
 
-    //We actully have an optional field service_params_checksum which you cannot call directly as you have to check if there is a value there.
+    //We actually have an optional field service_params_checksum which you cannot call directly as you have to check if there is a value there.
     //This will not work and wont compile
     //println!("{}", v.params.service_params_checksum);
 

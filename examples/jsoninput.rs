@@ -27,20 +27,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }),
     );
 
-    //This invokes a http request using our request to session::userLogon. We don't have a
-    //strongly typed struct for the response params here so we just deserialize them as a
-    //generic serde_json::Value.
-    let response: Response<serde_json::Value> = c.invoke("session", "userLogon", &request).await?;
-
-    //When you logon to your instance
-    println!("SessionId: {}", c.get_session_id());
+    //This invokes a http request using our request to session::userLogon (the service and method
+    //are taken from the request). We don't have a strongly typed struct for the response params
+    //here so we just deserialize them as a generic serde_json::Value.
+    let response: Response<serde_json::Value> = c.invoke(&request).await?;
 
     //`params` is only present when status is true; on an API-level failure `state` carries the
-    //error details instead (there is no `params` key in that case).
-    if response.status {
-        println!("params: {}", response.params.unwrap_or_default());
-    } else if let Some(state) = response.state {
-        println!("api call failed ({}): {}", state.code, state.error);
+    //error details instead (there is no `params` key in that case). into_result turns this into
+    //a normal Result so you could also just use `?` here.
+    match response.into_result() {
+        Ok(params) => {
+            //When you logon to your instance the session id is stored for later calls
+            println!("SessionId: {}", c.get_session_id());
+            println!("params: {}", params.unwrap_or_default());
+        }
+        Err(state) => println!("{}", state),
     }
 
     Ok(())

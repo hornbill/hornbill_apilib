@@ -8,10 +8,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //We then create our xmlmc object that we can use to query our instance.
     let mut c = Xmlmc::new(&url)?;
 
-    //We need to tell the xmlmc object to copy headers from any response otherwise it will not do this as it can be ineffcient.
+    //We need to tell the xmlmc object to copy headers from any response otherwise it will not do this as it can be inefficient.
     c.set_copy_headers(true);
 
-    // This requires one input paramets of stage which is an unsignedint
+    // This requires one input parameter of stage which is an unsigned int
     c.set_param("stage", "1")?;
 
     //We now invoke the call. We are not going to use the string body so we throw the result away.
@@ -31,7 +31,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{:?}: {:?}", key, value);
     }
 
-    //test to see if a single header exists. This is case insensetive
+    //test to see if a single header exists. This is case insensitive
     println!("{}", headers.contains_key("SeRvEr"));
 
     Ok(())
