@@ -1,13 +1,14 @@
 # Hornbill rust api library
 
-[![hornbill_apilib](https://meritbadge.herokuapp.com/hornbill_apilib)](https://crates.io/crates/hornbill_apilib)
+[![crates.io](https://img.shields.io/crates/v/hornbill_apilib.svg)](https://crates.io/crates/hornbill_apilib)
 
-This is an initial commit of the library. It it still a work in progress and
-some API's might change to make them more effcient.
+This library is still a work in progress and some APIs might change to make
+them more efficient.
 
 This library can be used to build tools to communicate with your hornbill
-instance using the xmlmc endpoint. The documentation for this endpoint can be
-found [`here`](https://docs.hornbill.com/)
+instance using either the JSON API (`JsonMC`, preferred) or the xmlmc endpoint
+(`Xmlmc`). The documentation for these endpoints can be found
+[`here`](https://docs.hornbill.com/)
 
 ## Documentation
 
@@ -19,7 +20,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-hornbill_apilib = "0.4"
+hornbill_apilib = "0.5"
 ```
 
 ## Examples
@@ -32,6 +33,9 @@ quick real world use of the library
 [`logon`.](https://github.com/hornbill/hornbill_apilib/blob/master/examples/logon.rs) -
 how to logon either with userLogon or setting an apikey.
 
+[`jsoninput`.](https://github.com/hornbill/hornbill_apilib/blob/master/examples/jsoninput.rs) -
+Sending a request to the JSON API and handling the response.
+
 [`jsonresponse`.](https://github.com/hornbill/hornbill_apilib/blob/master/examples/jsonresponse.rs) -
 Requesting a json response back from the server and parsing it using serde_json.
 
@@ -39,4 +43,4 @@ Requesting a json response back from the server and parsing it using serde_json.
 If you need to see the response headers from api calls.
 
 [`multithreaded`.](https://github.com/hornbill/hornbill_apilib/blob/master/examples/multithreaded.rs) -
-How to execute multiple http requestsa at the same time. requires tokio.
+How to execute multiple http requests at the same time. requires tokio.

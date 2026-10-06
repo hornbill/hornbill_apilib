@@ -17,20 +17,14 @@ async fn logon(url: String) -> Result<JsonMC, String> {
         }),
     );
 
-    let response: Response<serde_json::Value> = c
-        .invoke("session", "userLogon", &request)
-        .await
-        .map_err(|e| e.to_string())?;
+    let response: Response<serde_json::Value> =
+        c.invoke(&request).await.map_err(|e| e.to_string())?;
 
-    if response.status {
-        Ok(c)
-    } else {
-        let message = response
-            .state
-            .map(|s| s.error)
-            .unwrap_or_else(|| "unknown error".to_string());
-        Err(format!("logon failed: {message}"))
-    }
+    response
+        .into_result()
+        .map_err(|state| format!("logon failed: {state}"))?;
+
+    Ok(c)
 }
 
 #[tokio::main]

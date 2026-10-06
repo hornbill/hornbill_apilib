@@ -28,9 +28,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //We then create our xmlmc object that we can use to query our instance.
     let mut c = Xmlmc::new(&url)?;
 
-    //We are going to pick a simple API that does not actully require a login https://api.hornbill.com/system/?op=pingCheck
+    //We are going to pick a simple API that does not actually require a login https://api.hornbill.com/system/?op=pingCheck
 
-    // This requires one input paramets of stage which is an unsignedint
+    // This requires one input parameter of stage which is an unsigned int
     c.set_param("stage", "1")?;
 
     //We now invoke the call and save the string result to res, otherwise the error propagates out of main.
@@ -43,7 +43,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let v: PingCheck = serde_xml_rs::from_reader(res.as_bytes())?;
 
-    //YOu can now print some of the values inside or PingCheck struct.
+    //You can now print some of the values inside our PingCheck struct.
     println!("{}", v.status);
     println!("{}", v.params.stage_name);
     println!("{}", v.params.next_stage);

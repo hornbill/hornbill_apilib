@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+
+      # First so a formatting slip fails fast, before the slower build steps.
+      - name: Format
+        run: cargo fmt --all --check
+
+      # Unit tests use a local wiremock server and the doc tests are compile-only (no_run),
+      # so nothing here talks to a real Hornbill instance.
+      - name: Test
+        run: cargo test
+
+      # The examples call a live instance, so they are only compiled, not run.
+      - name: Build examples
+        run: cargo build --examples
+
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
